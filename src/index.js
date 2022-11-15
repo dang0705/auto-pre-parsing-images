@@ -2,8 +2,9 @@ const upperCase = (all, letter) => letter.toUpperCase();
 const k2c = (str) => str.replace(/-(\w)/g, upperCase);
 const imageOfThisProject = {};
 export default {
-  install(Vue) {
-    Vue.prototype.$mappingImages = ({
+  install(app) {
+    const isVue3 = !!app.config?.globalProperties;
+    const mappingImages = ({
       common = "",
       device = "",
       project = "",
@@ -39,11 +40,14 @@ export default {
             ).href);
         }
       }
-      const isVue3 = !!Vue.config?.globalProperties;
+
       isVue3
-        ? (Vue.config.globalProperties.globalImages = imageOfThisProject)
-        : (Vue.prototype.globalImages = imageOfThisProject);
+        ? (app.config.globalProperties.globalImages = imageOfThisProject)
+        : (app.prototype.globalImages = imageOfThisProject);
       return imageOfThisProject;
     };
+    isVue3
+      ? (app.config.globalProperties.$mappingImages = mappingImages)
+      : (app.prototype.$mappingImages = mappingImages);
   },
 };
